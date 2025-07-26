@@ -1,5 +1,5 @@
 import React from "react";
-import "/project/workspace/src/styles.css";
+import "funFacts/src/styles.css";
 
 function Header() {
   return (
