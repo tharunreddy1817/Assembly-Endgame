@@ -1,58 +1,85 @@
 * {
   box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  font-family: Inter;
 }
 .App {
-  min-height: 100vh;
-  background-color: rgba(0, 0, 0, 0.837);
-  background-image: url("/project/workspace/public/images/half-react.png");
-  background-repeat: no-repeat;
-  background-size: 120px;
-  background-position-x: right;
-  background-position-y: 65%;
-}
-
-div {
-  color: white;
-}
-div h1 {
-  font-size: 35px;
-  margin-left: 40px;
-}
-div ul {
-  font-size: 20px;
-  line-height: 2;
-  margin-left: 40px;
-}
-div ul li::marker {
-  color: #61dafb;
-  font-size: 30px;
+  border-radius: 20px;
 }
 
 .header {
-  background-color: rgba(12, 11, 11, 0.377);
-  padding: 0px;
+  background-color: rgb(238, 36, 14);
+  align-items: center;
   margin: 0px;
+  padding: 20px;
+}
+.header nav {
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-}
-nav {
-  padding: 40px;
-  color: rgb(89, 187, 225);
-  display: flex;
-  align-items: center;
-}
-nav img {
-  width: 60px;
-  margin-right: 7px;
-}
-nav span {
-  color: #61dafb;
-  font-size: 28px;
-  font-weight: 700;
+  margin: 0 auto;
 }
 
-.nav-item {
-  margin-right: 22px;
+.header nav img {
+  width: 30px;
+}
+.header nav span {
+  color: white;
+  font-size: 18px;
+  font-weight: 300;
+  margin-left: 7px;
+}
+
+.entry {
+  padding: 50px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+.location {
+  align-items: center;
+  padding-left: 20px;
+  margin-top: 0 20px;
+}
+.location img {
+  width: 9px;
+  height: 12px;
+  margin-right: 5px;
+}
+
+.location span {
+  color: rgba(19, 19, 19, 0.955);
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  font-size: 13px;
+  margin-right: 12px;
+}
+
+.location a {
+  color: rgba(39, 38, 38, 0.626);
+  font-size: 13px;
+}
+
+.name {
+  padding-left: 20px;
+  margin-top: 2px;
+  font-size: 31px;
+}
+.time {
+  padding-left: 20px;
+  margin-top: 20px;
+  font-size: 12.8px;
+}
+.info {
+  color: rgba(19, 19, 19, 0.955);
+  font-size: 14px;
+
+  padding-left: 20px;
+  margin-top: 8px;
+}
+
+.picture {
+  border-radius: 8px;
+  width: 200px;
+  height: 200px;
 }
