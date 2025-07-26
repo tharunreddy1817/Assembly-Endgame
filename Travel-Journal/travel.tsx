@@ -1,3 +1,4 @@
+import React from "react";
 import "/project/workspace/src/styles.css";
 
 function Header() {
@@ -41,7 +42,7 @@ export default function App() {
     <div className="App">
       <Header />
       <Entry />
-      <Entry/>
+      <Entry />
     </div>
   );
 }
