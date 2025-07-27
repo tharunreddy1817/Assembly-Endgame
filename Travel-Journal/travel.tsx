@@ -1,5 +1,6 @@
+import React from "react";
 import "/project/workspace/src/styles.css";
-import placesArray from "../data.js";
+import placesArray from "/project/workspace/Travel-Journal/data.js";
 type Props = {
   picture: string;
   alt: string;
