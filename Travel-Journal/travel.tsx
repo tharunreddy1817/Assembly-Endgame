@@ -1,27 +1,22 @@
 import React from "react";
 import "/project/workspace/src/styles.css";
 import placesArray from "/project/workspace/Travel-Journal/data.js";
-type Props = {
-  picture: string;
-  alt: string;
+
+type props = {
+  id: number;
+  img: {
+    src: string;
+    alt: string;
+  };
+  title: string;
   country: string;
-  link: string;
-  name: string;
-  time: string;
-  info: string;
+  googleMapsLink: string;
+  dates: string;
+  text: string;
 };
 
-const places = placesArray.map((place) => (
-  <Entry
-    picture={place.img.src}
-    alt={place.img.alt}
-    country={place.country}
-    link={place.googleMapsLink}
-    name={place.title}
-    time={place.dates}
-    info={place.text}
-  />
-));
+const places = placesArray.map((place) => <Entry key={place.id} {...place} />);
+
 function Header() {
   return (
     <header className="header">
@@ -33,25 +28,26 @@ function Header() {
   );
 }
 
-function Entry(props: Props) {
+function Entry(props: props) {
   return (
     <article className="entry">
       <div className="img-container">
-        <img className="picture" src={props.picture} alt={props.alt} />
+        <img className="picture" src={props.img.src} alt={props.img.alt} />
       </div>
       <div className="entrytext">
         <p className="location">
           <img src="images/marker.png" alt="loc-icon" />
           <span className="country">{props.country}</span>
-          <a href={props.link}>View on Google Maps</a>
+          <a href={props.googleMapsLink}>View on Google Maps</a>
         </p>
-        <h2 className="name">{props.name}</h2>
-        <h6 className="time">{props.time}</h6>
-        <p className="info">{props.info}</p>
+        <h2 className="name">{props.country}</h2>
+        <h6 className="time">{props.dates}</h6>
+        <p className="info">{props.text}</p>
       </div>
     </article>
   );
 }
+
 export default function App() {
   return (
     <div className="App">
