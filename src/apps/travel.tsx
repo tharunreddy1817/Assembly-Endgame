@@ -1,5 +1,5 @@
 import "/project/workspace/src/styles.css";
-import placesArray from "../data.js";
+import placesArray from "../travel.js";
 
 type props = {
   id: number;
