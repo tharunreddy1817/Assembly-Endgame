@@ -1,7 +1,7 @@
 import { PROVIDERS_OR_POLICIES } from "@huggingface/inference";
 import "/home/tharunreddy1817/practice-react/src/styles.css";
 import React from "react";
-import { getRecipeFromMistral } from "../ai";
+import { getRecipeFromMistral } from "./ai";
 import ReactMarkdown from "react-markdown"
 
 type ClaudeRecipeProps={
@@ -59,14 +59,14 @@ function Main() {
   const [recipe, setRecipe] = React.useState("");
   function getRecipe() {
     getRecipeFromMistral(list).then((recipeMarkdown) => {
-      setRecipe(recipeMarkdown);
+    setRecipe(recipeMarkdown);
     });
   }
   
   function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const newIngredient = formData.get("ingredient").toString() ?? "";
+    const newIngredient = formData.get("ingredient");
     setList((prev) => (newIngredient ? [...prev, newIngredient] : prev));
   }
 
