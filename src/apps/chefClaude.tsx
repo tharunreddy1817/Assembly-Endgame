@@ -1,5 +1,5 @@
 import { PROVIDERS_OR_POLICIES } from "@huggingface/inference";
-import "/home/tharunreddy1817/practice-react/src/styles.css";
+import "/home/tharunreddy1817/practice-react/src/chef.css";
 import React from "react";
 import { getRecipeFromMistral } from "../ai";
 import ReactMarkdown from "react-markdown"
@@ -32,7 +32,7 @@ function IngredientsList(props) {
       </ul>
       {props.list.length > 3 && (
         <div className="get-recipe-container">
-          <div>
+          <div ref={props.recipeSection}>
             <h3>Ready for a recipe?</h3>
             <p>Generate a recipe from your list of ingredients.</p>
           </div>
@@ -55,12 +55,23 @@ function ClaudeRecipe(props) {
   );
 }
 function Main() {
+
   const [list, setList] = React.useState([]);
   const [recipe, setRecipe] = React.useState("");
+const recipeSection = React.useRef(null)
+
+   React.useEffect(function(){
+     if(recipe.length !=0 && recipeSection.current != null){
+      recipeSection.current.scrollIntoView({behaviour: "smooth"})
+     }
+   },[recipe])
+
   function getRecipe() {
-    getRecipeFromMistral(list).then((recipeMarkdown) => {
-      setRecipe(recipeMarkdown);
-    });
+    React.useEffect( function(){
+    getRecipeFromMistral(list).
+    then((recipeMarkdown) => 
+      setRecipe(recipeMarkdown)),[list]
+    })
   }
   
   function handleSubmit(event) {
@@ -69,6 +80,8 @@ function Main() {
     const newIngredient = formData.get("ingredient").toString() ?? "";
     setList((prev) => (newIngredient ? [...prev, newIngredient] : prev));
   }
+
+    
 
   return (
     <main>
@@ -82,7 +95,7 @@ function Main() {
         <button>Add ingredient</button>
       </form>
       {list.length > 0 && (
-        <IngredientsList list={list} getRecipe={getRecipe} />
+        <IngredientsList list={list} getRecipe={getRecipe} recipeSection={recipeSection} />
       )}
       {recipe && <ClaudeRecipe recipe={recipe}/>}
     </main>
