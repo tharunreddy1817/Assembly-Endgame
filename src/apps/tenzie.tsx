@@ -7,7 +7,7 @@ function Die(props){
     backgroundColor : props.isHeld ? "#59E391" : "white"
   }
   return(
-    <button style={styles}>{props.value}</button>
+    <button style={styles} onClick={()=>props.hold(props.id)}>{props.value}</button>
   )
 }
 
@@ -27,18 +27,21 @@ function generateAllNewDice()
 function Main(){
   const [diceArr, setDiceArr]= React.useState(generateAllNewDice())
 
-  const allDiceElements = diceArr.map(obj=> <Die  key={obj.key} value={obj.value} isHeld={obj.isHeld} />)
+  const allDiceElements = diceArr.map(obj=> <Die  key={obj.key} value={obj.value} isHeld={obj.isHeld} hold ={hold} id={obj.key} />)
   
    function rollDice(){
        setDiceArr(generateAllNewDice())
    }
 
+   function hold(id){
+     console.log(id)
+   }
   return(
         <main> 
             <div className="dice-container">
              {allDiceElements}
             </div>
-            <button className="roll" onClick={rollDice}>Roll</button>
+            <button className="roll" onClick={rollDice} >Roll</button>
           </main>
   )
 }
