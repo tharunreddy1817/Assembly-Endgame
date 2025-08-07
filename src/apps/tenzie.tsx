@@ -1,5 +1,7 @@
 import React from "react"
 import "/home/tharunreddy1817/practice-react/src/styles.css"
+// @ts-ignore
+import Confetti from "react-confetti"
 
 
 function Die(props){
@@ -7,7 +9,7 @@ function Die(props){
     backgroundColor : props.isHeld ? "#59E391" : "white"
   }
   return(
-    <button style={styles} onClick={()=>props.hold(props.id)}>{props.value}</button>
+    <button style={styles} onClick={props.hold}>{props.value} </button>
   )
 }
 
@@ -25,23 +27,40 @@ function generateAllNewDice()
   return arr;
 }
 function Main(){
-  const [diceArr, setDiceArr]= React.useState(generateAllNewDice())
+  const [diceArr, setDiceArr]= React.useState(()=>generateAllNewDice())
 
-  const allDiceElements = diceArr.map(obj=> <Die  key={obj.key} value={obj.value} isHeld={obj.isHeld} hold ={hold} id={obj.key} />)
+  let gameWon = true;
+  let num =diceArr[0].value
+  for(let i=0;i<diceArr.length;i++)
+  {
+    if(diceArr[i].isHeld != true || diceArr[i].value != num)
+    {
+      gameWon = false;
+      break;
+    }
+  }
+
+  const allDiceElements = diceArr.map(obj=> <Die  key={obj.key} value={obj.value} isHeld={obj.isHeld} hold ={()=>hold(obj.key)} />)
   
    function rollDice(){
-       setDiceArr(generateAllNewDice())
+       gameWon ? setDiceArr(generateAllNewDice) :
+       setDiceArr(prev=> prev.map(dice => dice.isHeld ? dice : {...dice, value:Math.ceil(Math.random() * 6)}))
    }
 
    function hold(id){
-     console.log(id)
+     setDiceArr(prev=> prev.map(dice =>
+      dice.key === id ? {...dice, isHeld : !dice.isHeld } : dice
+     ))
    }
   return(
         <main> 
+          {gameWon && <Confetti/>}
+           <h1 className="title">Tenzies</h1>
+            <p className="instructions">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
             <div className="dice-container">
              {allDiceElements}
             </div>
-            <button className="roll" onClick={rollDice} >Roll</button>
+            <button className="roll" onClick={rollDice} >{gameWon ? "New Game" : "Roll"}</button>
           </main>
   )
 }
