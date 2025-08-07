@@ -28,7 +28,7 @@ function generateAllNewDice()
       
       arr.push({
         key:i,
-        value:Math.ceil(Math.random() * 6), isHeld:false
+        value: Math.ceil(Math.random() * 6), isHeld:false
       })
   }
   return arr;
