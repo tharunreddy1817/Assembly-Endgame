@@ -5,7 +5,7 @@ import clsx from "clsx"
 function LanguageChip(props){
 
    return(
-         <span className="chip" style={{backgroundColor: props.backgroundColor ,color:props.color}}>
+         <span className={props.className} style={{backgroundColor: props.backgroundColor ,color:props.color}}>
              {props.name}
          </span>
    )
@@ -24,7 +24,6 @@ function Header(){
 function Main(){
     const alphabet = "abcdefghijklmnopqrstuvwxyz"
     const [currentWord, setCurrentWord] = React.useState("react")
-    const chips = languages.map((data)=> <LanguageChip name={data.name} color={data.color} backgroundColor={data.backgroundColor} />)
  
     const [guessedLetters, setGuessedLetters] = React.useState([])
 
@@ -47,12 +46,33 @@ function Main(){
      })} onClick={()=> addGuessedLetter(letter)} key={index} >{letter.toUpperCase()}</button>
      )})
      const wrongGuessCount = guessedLetters.filter(letter=> !currentWord.includes(letter)).length
+     const isGameWon = wordArr.every((letter)=> guessedLetters.includes(letter))
+     const isGameLost= wrongGuessCount >= languages.length-1
+     const isGameOver = isGameWon || isGameLost
+
+     const chips = languages.map((data, index)=> { 
+        const isLost = index < wrongGuessCount
+        const className = clsx("chip", isLost && "lost")
+        return (<LanguageChip className = {className} name={data.name} color={data.color} backgroundColor={data.backgroundColor} />)})
+     const stateClass = clsx("stateSection", {won:isGameWon, lost : isGameLost} )
      return (
         <main>
-            <div className="stateSection">
-                <h2>You win!</h2>
-                <p>Well done!🎉</p>         
-           </div>
+            <Header/>
+            <section className={stateClass}>
+              {isGameOver ? (isGameWon ? (
+                <>
+               <h2>You win!</h2>
+                <p>Well done!🎉</p>
+                </>
+                 ) :
+                (
+                    <>
+                <h2>Game over!</h2>
+                <p>You lose! Better start learning Assembly😭</p> 
+                </>
+                )
+               ): null }       
+           </section>
            <div className="languageChips">
            {chips}
            </div>
@@ -62,8 +82,7 @@ function Main(){
            <section className="keyboard">
             {keyboard}
            </section>
-           <button  className="newGame">New Game</button>
-           {wrongGuessCount}
+           {isGameOver && <button  className="newGame" onClick={()=> {setGuessedLetters([])}}>New Game</button>}
         </main>
     )
 }
@@ -71,7 +90,6 @@ function Main(){
 export default function App(){
     return(
         <>
-        <Header/>
         <Main/>
         </>
     )
