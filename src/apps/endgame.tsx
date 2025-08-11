@@ -55,23 +55,33 @@ function Main(){
         const className = clsx("chip", isLost && "lost")
         return (<LanguageChip className = {className} name={data.name} color={data.color} backgroundColor={data.backgroundColor} />)})
      const stateClass = clsx("stateSection", {won:isGameWon, lost : isGameLost} )
-     return (
-        <main>
-            <Header/>
-            <section className={stateClass}>
-              {isGameOver ? (isGameWon ? (
+
+     function renderStateClass(){
+        if(!isGameOver){
+            return null
+        }
+
+        if(isGameWon){
+            return (
                 <>
                <h2>You win!</h2>
                 <p>Well done!🎉</p>
                 </>
-                 ) :
-                (
-                    <>
+            )
+        }else {
+            return (
+                <>
                 <h2>Game over!</h2>
                 <p>You lose! Better start learning Assembly😭</p> 
                 </>
-                )
-               ): null }       
+            )
+        }
+     }
+     return (
+        <main>
+            <Header/>
+            <section className={stateClass}>
+              {renderStateClass()}       
            </section>
            <div className="languageChips">
            {chips}
