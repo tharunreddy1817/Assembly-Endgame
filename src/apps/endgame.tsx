@@ -1,4 +1,4 @@
-import "../styles.css"
+import "src/styles.css"
 import React from "react"
 import { languages } from "../languages"
 import clsx from "clsx"
