@@ -2,6 +2,10 @@ import "/home/tharunreddy1817/practice-react/src/styles.css"
 import React from "react"
 import { languages } from "../languages"
 import clsx from "clsx"
+import { getFarewellText } from "../farewell"
+import { getRandomWord } from "../words"
+// @ts-ignore
+import Confetti from "react-confetti"
 function LanguageChip(props){
 
    return(
@@ -23,18 +27,32 @@ function Header(){
 
 function Main(){
     const alphabet = "abcdefghijklmnopqrstuvwxyz"
-    const [currentWord, setCurrentWord] = React.useState("react")
+    const [currentWord, setCurrentWord] = React.useState(()=>getRandomWord())
  
-    const [guessedLetters, setGuessedLetters] = React.useState([])
+    const [guessedLetters, setGuessedLetters] = React.useState<string[]>([])
 
     function addGuessedLetter(letter){
-        setGuessedLetters((prev)=> prev.includes(letter) ? prev : [...prev, letter])
+        setGuessedLetters(prev=> prev.includes(letter) ? prev : [...prev, letter])
     }
     
     const wordArr = Array.from(currentWord)
-     const spans = wordArr.map((char,index)=>  <span key={index} className="char">{guessedLetters.includes(char) ? char.toUpperCase() : ""}</span>)
+     
     
      const alphabetArr = Array.from(alphabet)
+
+     const wrongGuessCount = guessedLetters.filter(letter=> !currentWord.includes(letter)).length
+     const isGameWon = wordArr.every((char)=> guessedLetters.includes(char))
+     const isGameLost= wrongGuessCount >= languages.length-1
+     const isGameOver = isGameWon || isGameLost
+     let buttonDisable = false
+    function newGameSetup(){
+        buttonDisable=true;
+        setGuessedLetters([]);
+        setCurrentWord(getRandomWord())
+    }
+
+    const spans = wordArr.map((char,index)=>  <span key={index} className={clsx("char",{ missed: isGameLost})}>{(guessedLetters.includes(char) || isGameOver)? char.toUpperCase() : ""}</span>)
+
      const keyboard = alphabetArr.map((letter,index)=> {
      const isGuessed = guessedLetters.includes(letter)
      const isCorrect = isGuessed && currentWord.includes(letter)
@@ -43,22 +61,38 @@ function Main(){
      <button className={clsx({
        correct : isCorrect,
        wrong : isWrong
-     })} onClick={()=> addGuessedLetter(letter)} key={index} >{letter.toUpperCase()}</button>
+     })}
+      onClick={()=> addGuessedLetter(letter)} 
+      key={index} disabled={isGameOver} 
+      aria-disabled={guessedLetters.includes(letter)} 
+      aria-label={`Letter ${letter}`}
+      >
+        {letter.toUpperCase()}
+    </button>
      )})
-     const wrongGuessCount = guessedLetters.filter(letter=> !currentWord.includes(letter)).length
-     const isGameWon = wordArr.every((letter)=> guessedLetters.includes(letter))
-     const isGameLost= wrongGuessCount >= languages.length-1
-     const isGameOver = isGameWon || isGameLost
+     
 
      const chips = languages.map((data, index)=> { 
         const isLost = index < wrongGuessCount
         const className = clsx("chip", isLost && "lost")
         return (<LanguageChip className = {className} name={data.name} color={data.color} backgroundColor={data.backgroundColor} />)})
-     const stateClass = clsx("stateSection", {won:isGameWon, lost : isGameLost} )
+     
+        const needFarewell = !wordArr.includes(guessedLetters[guessedLetters.length-1]) 
+     
+        const stateClass = clsx("stateSection", {won:isGameWon, lost : isGameLost, farewell: !isGameOver && needFarewell && wrongGuessCount>0} )
+   
+    
 
      function renderStateClass(){
         if(!isGameOver){
-            return null
+            if(needFarewell && wrongGuessCount>0){
+                return (
+                    <p className="farewell-message">{getFarewellText(languages[wrongGuessCount-1].name)}</p>
+                )
+            }
+            else{
+                return null;
+            }
         }
 
         if(isGameWon){
@@ -68,7 +102,7 @@ function Main(){
                 <p>Well done!🎉</p>
                 </>
             )
-        }else {
+        }else if(isGameLost) {
             return (
                 <>
                 <h2>Game over!</h2>
@@ -76,11 +110,15 @@ function Main(){
                 </>
             )
         }
-     }
+    
+
+        }
+     
      return (
         <main>
+            {isGameWon && <Confetti aria-live="polite"/>}
             <Header/>
-            <section className={stateClass}>
+            <section  aria-live="polite" className={stateClass}>
               {renderStateClass()}       
            </section>
            <div className="languageChips">
@@ -92,7 +130,7 @@ function Main(){
            <section className="keyboard">
             {keyboard}
            </section>
-           {isGameOver && <button  className="newGame" onClick={()=> {setGuessedLetters([])}}>New Game</button>}
+           {isGameOver && <button  className="newGame" onClick={newGameSetup}>New Game</button>}
         </main>
     )
 }

@@ -36,6 +36,7 @@ header>p{
   align-items: center;
   flex-direction:column;
   display:flex;
+  justify-content: center;
   color:#F9F4DA;
   border-radius:4px;
   margin-block: 30px;
@@ -52,6 +53,11 @@ header>p{
   background-color: #ba2a2a;
 }
 
+.stateSection.farewell{
+  background-color: #7a5ea7;
+  border: 1px dashed #323232;
+}
+
 .stateSection>h2{
   font-size: 1.25rem;
   margin: 5px;
@@ -59,6 +65,10 @@ header>p{
 }
 .stateSection>p{
   margin: 5px;
+}
+.stateSection>p.farewell-message{
+  font-style: italic;
+  font-weight: 400;
 }
 
 .languageChips{
@@ -106,6 +116,10 @@ header>p{
   border-bottom: 1px solid #F9F4DA;
   font-size: 1.125rem;
   
+}
+
+.char.missed{
+  color:red;
 }
 
 .keyboard{
