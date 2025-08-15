@@ -31,24 +31,40 @@ function Main(){
  
     const [guessedLetters, setGuessedLetters] = React.useState<string[]>([])
 
+    const [time, setTime] = React.useState(90)
+
+    React.useEffect(()=>{
+        const interval = setInterval(()=>{setTime((prev)=> prev-1)},1000)
+
+        return ()=>clearInterval(interval)
+    })
+
+    let obj ={
+        mins: Math.floor(time/60),
+        secs: time%60
+
+    }
+
     function addGuessedLetter(letter){
         setGuessedLetters(prev=> prev.includes(letter) ? prev : [...prev, letter])
     }
     
     const wordArr = Array.from(currentWord)
      
+    const isTimeUp = time <= 0
     
      const alphabetArr = Array.from(alphabet)
 
      const wrongGuessCount = guessedLetters.filter(letter=> !currentWord.includes(letter)).length
      const isGameWon = wordArr.every((char)=> guessedLetters.includes(char))
-     const isGameLost= wrongGuessCount >= languages.length-1
+     const isGameLost= wrongGuessCount >= languages.length-1 || isTimeUp
      const isGameOver = isGameWon || isGameLost
      let buttonDisable = false
     function newGameSetup(){
         buttonDisable=true;
         setGuessedLetters([]);
         setCurrentWord(getRandomWord())
+        setTime(90)
     }
 
     const spans = wordArr.map((char,index)=>  <span key={index} className={clsx("char",{ missed: isGameLost})}>{(guessedLetters.includes(char) || isGameOver)? char.toUpperCase() : ""}</span>)
@@ -130,7 +146,11 @@ function Main(){
            <section className="keyboard">
             {keyboard}
            </section>
-           {isGameOver && <button  className="newGame" onClick={newGameSetup}>New Game</button>}
+           {isGameOver ? <button  className="newGame" onClick={newGameSetup}>New Game</button>: ""}
+          <section className="bottom">
+           {!isGameOver && <span className="remaining-guesses">Remaining Guesses: {languages.length-1-wrongGuessCount}</span>}
+           <span className={!isGameOver ? "time": "time-over"}>{ isTimeUp ? "Time Up!" : !isGameOver? `Time Left ${String(obj.mins).padStart(2,"0")}:${String(obj.secs).padStart(2,"0")}`: null}</span>
+           </section>
         </main>
     )
 }
