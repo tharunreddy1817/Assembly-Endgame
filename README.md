@@ -51,9 +51,6 @@ src/
 ├── words.ts
 ├── styles.css
 
-yaml
-Copy code
-
 ---
 
 ## What I Learned
@@ -71,14 +68,8 @@ Copy code
 1. Install dependencies:
 npm install
 
-markdown
-Copy code
-
 2. Start the development server:
 npm run dev
-
-yaml
-Copy code
 
 3. Open the local URL provided in the terminal to play the game.
 
