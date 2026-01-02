@@ -6,8 +6,8 @@ import { getFarewellText } from "../farewell"
 import { getRandomWord } from "../words"
 // @ts-ignore
 import Confetti from "react-confetti"
-function LanguageChip(props){
 
+function LanguageChip(props){
    return(
          <span className={props.className} style={{backgroundColor: props.backgroundColor ,color:props.color}}>
              {props.name}
@@ -24,82 +24,77 @@ function Header(){
     )
 }
 
-
 function Main(){
     const alphabet = "abcdefghijklmnopqrstuvwxyz"
     const [currentWord, setCurrentWord] = React.useState(()=>getRandomWord())
- 
     const [guessedLetters, setGuessedLetters] = React.useState<string[]>([])
-
     const [time, setTime] = React.useState(90)
+    const [hasStarted, setHasStarted] = React.useState(false)
 
-    React.useEffect(()=>{
-        const interval = setInterval(()=>{setTime((prev)=> prev-1)},1000)
+    const wordArr = Array.from(currentWord)
+    const isTimeUp = time <= 0
+    const alphabetArr = Array.from(alphabet)
+    const wrongGuessCount = guessedLetters.filter(letter=> !currentWord.includes(letter)).length
+    const isGameWon = wordArr.every((char)=> guessedLetters.includes(char))
+    const isGameLost= wrongGuessCount >= languages.length-1 || isTimeUp
+    const isGameOver = isGameWon || isGameLost
 
-        return ()=>clearInterval(interval)
-    })
+    React.useEffect(() => {
+        if(!hasStarted || isGameOver) return
+        const interval = setInterval(() => {
+            setTime(prev => prev <= 1 ? 0 : prev - 1)
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [hasStarted, isGameOver])
 
     let obj ={
         mins: Math.floor(time/60),
         secs: time%60
-
     }
 
     function addGuessedLetter(letter){
+        if(!hasStarted) setHasStarted(true)
         setGuessedLetters(prev=> prev.includes(letter) ? prev : [...prev, letter])
     }
     
-    const wordArr = Array.from(currentWord)
-     
-    const isTimeUp = time <= 0
-    
-     const alphabetArr = Array.from(alphabet)
-
-     const wrongGuessCount = guessedLetters.filter(letter=> !currentWord.includes(letter)).length
-     const isGameWon = wordArr.every((char)=> guessedLetters.includes(char))
-     const isGameLost= wrongGuessCount >= languages.length-1 || isTimeUp
-     const isGameOver = isGameWon || isGameLost
-     let buttonDisable = false
+    let buttonDisable = false
     function newGameSetup(){
         buttonDisable=true;
         setGuessedLetters([]);
         setCurrentWord(getRandomWord())
         setTime(90)
+        setHasStarted(false)
     }
 
     const spans = wordArr.map((char,index)=>  <span key={index} className={clsx("char",{ missed: isGameLost})}>{(guessedLetters.includes(char) || isGameOver)? char.toUpperCase() : ""}</span>)
 
-     const keyboard = alphabetArr.map((letter,index)=> {
-     const isGuessed = guessedLetters.includes(letter)
-     const isCorrect = isGuessed && currentWord.includes(letter)
-     const isWrong = isGuessed && !currentWord.includes(letter)
-     return(
-     <button className={clsx({
-       correct : isCorrect,
-       wrong : isWrong
-     })}
-      onClick={()=> addGuessedLetter(letter)} 
-      key={index} disabled={isGameOver} 
-      aria-disabled={guessedLetters.includes(letter)} 
-      aria-label={`Letter ${letter}`}
-      >
-        {letter.toUpperCase()}
-    </button>
-     )})
-     
+    const keyboard = alphabetArr.map((letter,index)=> {
+        const isGuessed = guessedLetters.includes(letter)
+        const isCorrect = isGuessed && currentWord.includes(letter)
+        const isWrong = isGuessed && !currentWord.includes(letter)
+        return(
+            <button className={clsx({
+                correct : isCorrect,
+                wrong : isWrong
+            })}
+            onClick={()=> addGuessedLetter(letter)} 
+            key={index} disabled={isGameOver} 
+            aria-disabled={guessedLetters.includes(letter)} 
+            aria-label={`Letter ${letter}`}
+            >
+                {letter.toUpperCase()}
+            </button>
+        )})
 
-     const chips = languages.map((data, index)=> { 
+    const chips = languages.map((data, index)=> { 
         const isLost = index < wrongGuessCount
         const className = clsx("chip", isLost && "lost")
         return (<LanguageChip className = {className} name={data.name} color={data.color} backgroundColor={data.backgroundColor} />)})
-     
-        const needFarewell = !wordArr.includes(guessedLetters[guessedLetters.length-1]) 
-     
-        const stateClass = clsx("stateSection", {won:isGameWon, lost : isGameLost, farewell: !isGameOver && needFarewell && wrongGuessCount>0} )
-   
-    
 
-     function renderStateClass(){
+    const needFarewell = !wordArr.includes(guessedLetters[guessedLetters.length-1]) 
+    const stateClass = clsx("stateSection", {won:isGameWon, lost : isGameLost, farewell: !isGameOver && needFarewell && wrongGuessCount>0} )
+
+    function renderStateClass(){
         if(!isGameOver){
             if(needFarewell && wrongGuessCount>0){
                 return (
@@ -126,11 +121,9 @@ function Main(){
                 </>
             )
         }
-    
+    }
 
-        }
-     
-     return (
+    return (
         <main>
             {isGameWon && <Confetti aria-live="polite"/>}
             <Header/>
